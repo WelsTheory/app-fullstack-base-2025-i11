@@ -6,7 +6,6 @@ class Main implements EventListenerObject {
             if (xhr.readyState == 4) {
                 //console.log("Respuesta cruda:", xhr.responseText);
                 if (xhr.status == 200) {
-                    try {
                         const response = JSON.parse(xhr.responseText);
                         
                         // Verificar estructura esperada
@@ -16,6 +15,7 @@ class Main implements EventListenerObject {
 
                         const listaDis = response.data;
                         let listaDisp = document.getElementById("listaDisp");
+                        console.log(listaDisp);
                         
                         if (!listaDisp) {
                             throw new Error("Elemento listaDisp no encontrado");
@@ -41,7 +41,7 @@ class Main implements EventListenerObject {
                                         <p>${disp.description}</p>
                                     </div>
                                     <div class="card-action">
-                                        
+                                    <a href="#!" class="secondary-content">
                                         <div class="switch" style="float:right;">
                                             <label>
                                             Off
@@ -50,6 +50,7 @@ class Main implements EventListenerObject {
                                             On
                                             </label>
                                         </div>
+                                    </a>
                                     </div>
                                 </div>
                             </div>`;
@@ -57,17 +58,16 @@ class Main implements EventListenerObject {
                         
                         listaDisp.innerHTML = htmlContent;
                         for (const disp of listaDis) {
+                            
                             const delDisp = document.getElementById("btn-del-" + disp.id);
                             if (delDisp) {
                                 delDisp.addEventListener("click", (ev) => this.delDevConfirm(ev));
                             }
                         }
-                        listaDisp.innerHTML = htmlContent;
+                        
                         var elems = document.querySelectorAll('.tooltipped');
-                        var instances = M.Tooltip.init(elems, Option);
-                    } catch (error) {
-                        console.error("Error:", error);
-                    }
+                        M.Tooltip.init(elems);
+                    
                 } else {
                     console.error("Error HTTP:", xhr.status);
                 }
@@ -94,18 +94,18 @@ class Main implements EventListenerObject {
 
     public handleEvent(ev: Event): void {
         console.log(ev);
-        let objetoClick: HTMLElement = <HTMLElement>ev.target;
+        const objetoClick = ev.target as HTMLElement;
+        const id = objetoClick.id;
 
-        if (objetoClick.id.split("-")[0] == "delete"){
-            this.delDevConfirm(ev=ev);
+        if (id.startsWith("delete-")) {
+            this.delDevConfirm(ev);
         }
-        // Handle para agregar nuevo dispositivo
-        else if(objetoClick.id == "btn-agregar-disp"){
-            this.newDeviceForm(ev=ev)
+        else if (id === "btn-agregar-disp") {
+            this.newDeviceForm(ev);
         }
-        else{
-            alert("Algo salió mal")
-            console.log(ev.target)
+        else {
+            console.warn("Evento inesperado:", ev);
+            alert("Algo salió mal");
             window.location.replace("http://localhost:8000/");
         }
     }
@@ -196,7 +196,7 @@ class Main implements EventListenerObject {
             xhr.onload = function() {
                 if (xhr.status === 200) {
                     console.log("Dispositivo eliminado:", xhr.responseText);
-                    modal.style.display = "none"
+                    instance.close(); // <- Usa close del modal, no style.display
                     window.location.reload(); // Recargar la página para reflejar el cambio
                 } else {
                     console.error("Error al eliminar:", xhr.responseText);
@@ -212,7 +212,7 @@ class Main implements EventListenerObject {
         //delConfirmBtn.addEventListener("click",confirmDelete);
         delConfirmBtn.onclick = confirmDelete;
       
-        modal.style.display ="block";
+        instance.open();
       }
     
         
