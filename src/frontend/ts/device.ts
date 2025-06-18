@@ -1,7 +1,7 @@
 class Device{
-  id: number;
-  name: string;
-  description: string;
-  state: boolean;
-  type: number;
+  public id: number;
+  public name: string;
+  public description: string;
+  public state: boolean;
+  public type: number;
 }

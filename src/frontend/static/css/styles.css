@@ -9,12 +9,15 @@ main {
     flex: 1 0 auto;
 }
 
-.miColor{
-    background-color: rgb(36, 154, 154) !important;
+.row{
+    z-index: 2;
 }
-#btnLogin{
- background-color: rgb(154, 150, 36);
+
+.header-nav{
+    background-color: #2e8857;
 }
+
+
 #botones{
         text-align: center;
 }
@@ -23,3 +26,101 @@ main {
     font-size: large !important;
     font-weight: bold;
 }
+
+#listaDisp .card {
+    border-radius: 12px;           /* esquinas redondeadas */
+    border: 1px solid #e0e0e0;     /* borde suave */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* sombra ligera */
+    margin-bottom: 20px;           /* espacio entre tarjetas */
+    padding: 10px;                 /* espacio interior */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* animación suave */
+}
+
+#listaDisp .card:hover {
+    transform: translateY(-5px);   /* efecto de elevación al pasar el mouse */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+#listaDisp .card .card-content {
+    background-color: #fafafa;     /* color de fondo de contenido */
+    border-radius: 10px;
+}
+
+#listaDisp .card .card-title {
+    font-weight: bold;
+    color: #2e7d32;               /* color bonito para el título */
+    margin-bottom: 10px;
+}
+
+#listaDisp .card .card-action {
+    border-top: 1px solid #e0e0e0; /* línea divisoria arriba de botones */
+    padding-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nombreDisp{
+    font-size: 25px;
+    color: rgb(161, 48, 48);
+    }
+    
+    .btn-edit-device:hover{
+    background-color: rgba(38, 128, 207, 0.877);
+    }
+    
+    .btn-delete-device:hover{
+    background-color: #ff3527ce;
+    }
+
+.btn-confirmar:hover{
+    background: rgba(9, 161, 9, 0.753);
+    }
+    .btn-cancelar:hover{
+    background: rgba(184, 16, 16, 0.685);
+    }
+
+/* Modal */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 3; /* Sit on top */
+    left: 0;
+    top: 25%;
+    width: 20%; 
+    height: auto; 
+    }
+    
+    .modal-delete-device{
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 3; /* Sit on top */
+    left: 0;
+    top: 25%;
+    width: 25%; 
+    height: auto; 
+    }
+    
+    /* Modal Content/Box */
+    .modal-content {
+    background-color: #fefefe;
+    margin: 0% auto; /* 15% from the top and centered */
+    padding: 5px;
+    height: 80%;
+    width: 100%; /* Could be more or less, depending on screen size */
+    }
+    
+    /* The Close Button */
+    .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    }
+    
+    .close:hover,
+    .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+    } 
