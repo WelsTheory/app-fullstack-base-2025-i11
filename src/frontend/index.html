@@ -33,7 +33,7 @@
                 <!-- Modal para eliminar un dispositivo-->
                 <div id="modal-eliminar" class="modal">
                     <div class="modal-content">
-                        
+                        <h5>¿Estás seguro que quieres hacer eso?</h5>
                         <p>Esta acción no se puede deshacer.</p>
                     </div>
                     <div class="modal-footer">
@@ -125,14 +125,22 @@
                         </div>
                     </div>
                 </div>
-                <div class="input-field col s12 m12 l12 xl12">
-                    <textarea id="textarea_1" class="materialize-textarea" style="height: 150px;" readonly></textarea>
-                </div> 
-                
-                <br>
-                <h3>FIN!</h3>
-                <br/>
-            </div>	
+                <!-- Botones de apagar/encender todo -->
+                <div class="col l3 s2 m2" style="display: flex; justify-content: flex-end; gap: 10px;">
+                    <!-- Apagar todo -->
+                    <a id="btn-alldev-off" class="btn btn-alldev waves-effect waves-light">
+                      <i id="btn-alldev-off" class="material-icons left">power_settings_new</i>
+                      Apagar Todo
+                    </a>
+                  
+                    <!-- Encender todo -->
+                    <a id="btn-alldev-on" class="btn btn-alldev waves-effect waves-light">
+                        <i id="btn-alldev-on"class="material-icons left">power_settings_new</i>
+                        Encender todo
+                      </a>                      
+                  </div>
+                  <br></br>                
+            </div>
         </main>
 		<!-- Page Footer -->
         <footer class="page-footer" style="background-color:#124580">

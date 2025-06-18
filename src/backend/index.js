@@ -57,6 +57,38 @@ app.get('/devices/:id', (req, res) => {
     );
 });
 
+app.post('/devices/changestate', async (req, res) => {
+    const { id, state } = req.body;
+
+    // Validar entrada básica
+    if (!id || typeof state !== 'boolean') {
+        return res.status(400).json({
+            success: false,
+            message: "Se requieren 'id' y 'state' (booleano)."
+        });
+    }
+
+    try {
+        // Ejecutar UPDATE
+        await utils.query(
+            "UPDATE Devices SET state = ? WHERE id = ?",
+            [state ? 1 : 0, id]
+        );
+
+        res.status(200).json({
+            success: true,
+            message: `Estado del dispositivo con id=${id} actualizado a state=${state}.`
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: "Error al actualizar el estado del dispositivo.",
+            error: error.message
+        });
+    }
+});
 
 
 
@@ -159,23 +191,32 @@ app.post('/devices/edit/', async (req, res) => {
     }
 });
 
-app.get('/algo',function(req,res,next){
+app.post('/devices/all', async (req, res) => {
+    const newState = req.body.state;
 
-    console.log("llego una peticion a algo")
-    res.status(409).send({nombre:"Matias",apellido:"Ramos",dni:2131});
-});
-app.get('/algoInfo/:nombre',function(req,res,next){
-    
-    
-    res.status(200).send({saludo:"Hola "+req.params.nombre});
-});
+    // Validar que se reciba un booleano válido
+    if (typeof newState !== 'boolean') {
+        return res.status(400).json({
+            success: false,
+            message: "El campo 'state' debe ser booleano (true o false)."
+        });
+    }
 
-app.post('/algoInfoBody/',function(req,res,next){
-    console.log(req.body);
-    if(req.body.nombre != undefined){
-        res.status(200).send({saludo:"Hola "+req.body.nombre});
-    }else{
-        res.status(409).send({error:"Falta el nombre"});
+    try {
+        // Actualizar todos los dispositivos
+        await utils.query("UPDATE Devices SET state = ?", [newState ? 1 : 0]);
+
+        res.status(200).json({
+            success: true,
+            message: `Todos los dispositivos se actualizaron a state=${newState}.`
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: "Error al actualizar el estado de todos los dispositivos.",
+            error: error.message
+        });
     }
 });
 

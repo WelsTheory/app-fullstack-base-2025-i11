@@ -15,7 +15,6 @@ class Main implements EventListenerObject {
 
                         const listaDis = response.data;
                         let listaDisp = document.getElementById("listaDisp");
-                        console.log(listaDisp);
                         
                         if (!listaDisp) {
                             throw new Error("Elemento listaDisp no encontrado");
@@ -44,7 +43,7 @@ class Main implements EventListenerObject {
                                         <div class="switch" style="float:right;">
                                             <label>
                                             Off
-                                            <input type="checkbox" ${checked}>
+                                            <input id="disp-${disp.id}-state" type="checkbox" ${checked}>
                                             <span class="lever"></span>
                                             On
                                             </label>
@@ -67,7 +66,10 @@ class Main implements EventListenerObject {
                             let delDisp = document.getElementById("btn-edit-" + disp.id);
                             delDisp.addEventListener("click",this);
                         }       
-                        
+                        for (let disp of listaDis) {
+                            let checkDisp = document.getElementById("disp-" + disp.id +"-state");
+                            checkDisp.addEventListener("click", this);
+                        }
                         var elems = document.querySelectorAll('.tooltipped');
                         M.Tooltip.init(elems);
                     
@@ -87,6 +89,21 @@ class Main implements EventListenerObject {
             console.error("No se encontró el botón con ID btn-agregar-disp");
         }
 
+        let allDevOnBtn: HTMLElement | null = document.getElementById("btn-alldev-on");
+        let allDevOffBtn: HTMLElement | null = document.getElementById("btn-alldev-off");
+
+        if (allDevOnBtn) {
+            allDevOnBtn.addEventListener("click", this);
+        } else {
+            console.error("No se encontró el botón Encender Todo");
+        }
+
+        if (allDevOffBtn) {
+            allDevOffBtn.addEventListener("click", this);
+        } else {
+            console.error("No se encontró el botón Apagar Todo");
+        }
+
     }
 
     public addTooltips(){
@@ -103,17 +120,56 @@ class Main implements EventListenerObject {
         if (id.startsWith("delete-")) {
             this.delDevConfirm(ev);
         }
+        else if(objetoClick.id.match(/disp-\d+-state/))
+        {         
+            this.changeDevState(ev);
+        }
         else if (id === "btn-agregar-disp") {
             this.newDeviceForm(ev);
         }
         else if( id.startsWith("edit")){
             this.editDevConfirm(ev);
+        }else if(id.startsWith("btn-alldev")){
+            this.allDevState(ev);
         }
         else {
             console.warn("Evento inesperado:", ev);
             alert("Algo salió mal");
             window.location.replace("http://localhost:8000/");
         }
+    }
+
+    public allDevState(ev: Event) {
+        const idPart = (ev.target as HTMLElement).id; // más seguro con TypeScript
+        const on_off = idPart.split('-')[2];
+    
+        // Validar valor esperado
+        if (on_off !== "on" && on_off !== "off") {
+            console.error("Estado no válido:", on_off);
+            return;
+        }
+    
+        // Crear payload
+        const state = { state: on_off === "on" };
+    
+        // Crear solicitud
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://localhost:8000/devices/all", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+    
+        // Manejador de respuesta
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                console.log("Estado de todos los dispositivos actualizado:", xhr.responseText);
+                window.location.reload();
+            } else {
+                console.error("Error al cambiar estado de todos los dispositivos:", xhr.responseText);
+                alert("Error al actualizar todos los dispositivos.");
+            }
+        };
+    
+        // Enviar JSON
+        xhr.send(JSON.stringify(state));
     }
 
     public newDeviceForm(ev:Event){
@@ -287,6 +343,41 @@ class Main implements EventListenerObject {
         instance.open();
     }
     
+    public changeDevState(ev: Event) {
+        // Obtener la checkbox que disparó el evento
+        const checkBox = ev.target as HTMLInputElement;
+    
+        // Validar ID y extraer el número de dispositivo
+        const idParts = checkBox.id.split('-');
+        if (idParts.length < 2) {
+            console.error("ID de checkbox no válido:", checkBox.id);
+            return;
+        }
+    
+        const deviceId = idParts[1];
+        const newState = checkBox.checked;
+    
+        const datos = {
+            id: deviceId,
+            state: newState
+        };
+    
+        // Enviar con XMLHttpRequest
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "http://localhost:8000/devices/changestate", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+    
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                console.log(`Estado del dispositivo ${deviceId} actualizado correctamente.`);
+            } else {
+                console.error("Error al actualizar estado:", xhr.responseText);
+                alert("No se pudo actualizar el estado del dispositivo.");
+            }
+        };
+    
+        xhr.send(JSON.stringify(datos));
+    }
         
 }
 
