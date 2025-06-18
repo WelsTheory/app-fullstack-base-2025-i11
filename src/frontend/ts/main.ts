@@ -30,16 +30,18 @@ class Main implements EventListenerObject {
                                 <div class="card">
                                     <div class="card-content">
                                         <img src="./static/images/${icono}.png" alt="" class="circle">
-                                        <span class="card-title">${disp.name}</span>
-                                        <p>${disp.description}</p>
-                                    </div>
-                                    <div class="card-action">
+                                        <span class="card-title">${disp.name}
                                         <a class="btn-floating btn-small waves-effect waves-blue">
                                             <i class="material-icons">edit</i>
                                         </a>
                                         <a id="btn-del-${disp.id}" class="btn-floating btn-small waves-effect waves-red btn-delete-device tooltipped" data-position="bottom" data-tooltip="Eliminar">
                                             <i id="delete-${disp.id}" class="material-icons">delete</i>
                                         </a>
+                                        </span>
+                                        <p>${disp.description}</p>
+                                    </div>
+                                    <div class="card-action">
+                                        
                                         <div class="switch" style="float:right;">
                                             <label>
                                             Off
@@ -57,9 +59,7 @@ class Main implements EventListenerObject {
                         for (const disp of listaDis) {
                             const delDisp = document.getElementById("btn-del-" + disp.id);
                             if (delDisp) {
-                                delDisp.addEventListener("click", this);
-                            } else {
-                                console.warn("No se encontró el botón para disp.id =", disp.id);
+                                delDisp.addEventListener("click", (ev) => this.delDevConfirm(ev));
                             }
                         }
                         listaDisp.innerHTML = htmlContent;
@@ -92,7 +92,7 @@ class Main implements EventListenerObject {
     }
 
 
-    handleEvent(ev: Event): void {
+    public handleEvent(ev: Event): void {
         console.log(ev);
         let objetoClick: HTMLElement = <HTMLElement>ev.target;
 
@@ -170,43 +170,49 @@ class Main implements EventListenerObject {
     // Método del main para eliminar dispositivos
     public delDevConfirm(ev: Event) {
         // Toma id de dispositivo a eliminar
+        console.log("Modal Element:", modal);
         var id = (ev.target as HTMLElement).id.split("-")[1];
       
         // Referencia al modal
-        var modalElement = document.getElementById("modal-eliminar");
-        const instance = M.Modal.getInstance(modalElement);
-      
-        // Operación que se ejecuta al confirmar en el Modal
-        const confirmDelete = (ev: Event) => {
-          let deleteDevice = { "id": id };
-          let xhr = new XMLHttpRequest();
-          xhr.open("POST", "http://localhost:8000/devices/delete/", true);
-          xhr.setRequestHeader("Content-Type", "application/json");
-           // ✅ Esperar respuesta
-        xhr.onload = () => {
-            if (xhr.status === 200) {
-                console.log("Dispositivo eliminado:", xhr.responseText);
-                instance.close();
-                window.location.reload(); // Recargar la página para reflejar el cambio
-            } else {
-                console.error("Error al eliminar:", xhr.responseText);
-                alert("No se pudo eliminar el dispositivo.");
-            }
+        var modal = document.getElementById("modal-eliminar");
+        const instance = M.Modal.getInstance(modal);
+        console.log("Modal Element:", modal);
+        console.log("Modal Instance:", instance);
+        
+        var cancel = document.getElementById("cancela-eliminar");
+        cancel.onclick = () => {
+            modal.style.display = "none";
+            instance.close();
         };
 
-        xhr.send(JSON.stringify(deleteDevice));
+      
+        // Operación que se ejecuta al confirmar en el Modal
+        var confirmDelete = (ev: Event) => {
+            let deleteDevice = { "id": id };
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:8000/devices/delete/", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+           // ✅ Esperar respuesta
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    console.log("Dispositivo eliminado:", xhr.responseText);
+                    modal.style.display = "none"
+                    window.location.reload(); // Recargar la página para reflejar el cambio
+                } else {
+                    console.error("Error al eliminar:", xhr.responseText);
+                    alert("No se pudo eliminar el dispositivo.");
+                }
+            };
+
+            xhr.send(JSON.stringify(deleteDevice));
         };
       
         // Confirmar operación
-        const delConfirmBtn = document.getElementById("confirma-eliminar");
+        var delConfirmBtn = document.getElementById("confirma-eliminar");
+        //delConfirmBtn.addEventListener("click",confirmDelete);
         delConfirmBtn.onclick = confirmDelete;
       
-        // Botón de cancelar para cerrar la operación
-        const cancel = document.getElementById("cancela-eliminar");
-        cancel.onclick = () => instance.close();
-      
-        // Muestra el modal usando la instancia correcta
-        instance.open();
+        modal.style.display ="block";
       }
     
         
