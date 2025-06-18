@@ -31,9 +31,8 @@ class Main implements EventListenerObject {
                                     <div class="card-content">
                                         <img src="./static/images/${icono}.png" alt="" class="circle">
                                         <span class="card-title">${disp.name}
-                                        <a class="btn-floating btn-small waves-effect waves-blue">
-                                            <i class="material-icons">edit</i>
-                                        </a>
+                                         <a id = "btn-edit-${disp.id}" class="btn-floating btn-small waves-effect waves-blue btn-edit-device tooltipped" data-position="bottom" data-tooltip="Editar">
+                                            <i id ="edit-${disp.id}" class="small material-icons">edit</i></a>
                                         <a id="btn-del-${disp.id}" class="btn-floating btn-small waves-effect waves-red btn-delete-device tooltipped" data-position="bottom" data-tooltip="Eliminar">
                                             <i id="delete-${disp.id}" class="material-icons">delete</i>
                                         </a>
@@ -58,12 +57,16 @@ class Main implements EventListenerObject {
                         
                         listaDisp.innerHTML = htmlContent;
                         for (const disp of listaDis) {
-                            
                             const delDisp = document.getElementById("btn-del-" + disp.id);
                             if (delDisp) {
                                 delDisp.addEventListener("click", (ev) => this.delDevConfirm(ev));
                             }
                         }
+                        //listaDisp.innerHTML = htmlContent;
+                        for (let disp of listaDis) {
+                            let delDisp = document.getElementById("btn-edit-" + disp.id);
+                            delDisp.addEventListener("click",this);
+                        }       
                         
                         var elems = document.querySelectorAll('.tooltipped');
                         M.Tooltip.init(elems);
@@ -102,6 +105,9 @@ class Main implements EventListenerObject {
         }
         else if (id === "btn-agregar-disp") {
             this.newDeviceForm(ev);
+        }
+        else if( id.startsWith("edit")){
+            this.editDevConfirm(ev);
         }
         else {
             console.warn("Evento inesperado:", ev);
@@ -214,6 +220,72 @@ class Main implements EventListenerObject {
       
         instance.open();
       }
+
+    public editDevConfirm(ev:Event): void{
+        // Obtener ID desde el botón pulsado
+        const id = (ev.target as HTMLElement).id.split("-")[1];
+
+        // Referencia al modal de edición
+        const modal = document.getElementById("modal-edit-device");
+        const instance = M.Modal.getInstance(modal);
+
+        // Campos del formulario
+        const nameField = document.getElementById("edit-dev-name") as HTMLInputElement;
+        const descField = document.getElementById("edit-description") as HTMLInputElement;
+
+        // Botón de cancelar para cerrar la operación
+        // Botón Cancelar
+        const cancelBtn = document.getElementById("cancelar-edit");
+        cancelBtn.onclick = () => {
+            instance.close();
+            nameField.value = "";
+            descField.value = "";
+        };
+        
+        const confirmBtn = document.getElementById("btn-confirm-edit");
+
+        confirmBtn.onclick = () => {
+            const devName = nameField.value.trim();
+            const devDesc = descField.value.trim();
+    
+            if (!devName || !devDesc) {
+                alert("Por favor complete todos los campos.");
+                return;
+            }
+    
+            const newInfo = {
+                id: id,
+                name: devName,
+                description: devDesc
+            };
+    
+            // Enviar con XMLHttpRequest
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:8000/devices/edit/", true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+    
+            xhr.onload = () => {
+                if (xhr.status === 200) {
+                    console.log("Dispositivo editado:", xhr.responseText);
+                    instance.close();
+                    window.location.reload();
+                } else {
+                    console.error("Error al editar:", xhr.responseText);
+                    alert("No se pudo editar el dispositivo.");
+                }
+            };
+    
+            xhr.onerror = () => {
+                console.error("Error de red al editar.");
+                alert("Error de red al editar el dispositivo.");
+            };
+    
+            xhr.send(JSON.stringify(newInfo));
+        };
+    
+        // Abrir modal usando Materialize
+        instance.open();
+    }
     
         
 }

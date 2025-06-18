@@ -116,6 +116,49 @@ app.post('/devices/add/', (req, res) => {
     });
 });
 
+app.post('/devices/edit/', async (req, res) => {
+    const { id, name, description } = req.body;
+
+    // Validación básica
+    if (!id || !name || !description) {
+        return res.status(400).json({
+            success: false,
+            message: "Faltan campos obligatorios: id, name o description."
+        });
+    }
+
+    try {
+        // Ejecutar UPDATE
+        const result = await utils.query(
+            "UPDATE Devices SET name = ?, description = ? WHERE id = ?",
+            [name, description, id]
+        );
+
+        // Revisar si realmente se modificó algo
+        if (result.affectedRows === 0) {
+            return res.status(404).json({
+                success: false,
+                message: `Dispositivo con id ${id} no encontrado o sin cambios.`
+            });
+        }
+
+        // OK
+        res.status(200).json({
+            success: true,
+            message: `Dispositivo con id ${id} editado correctamente.`,
+            updatedId: id
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: "Error al editar el dispositivo",
+            error: error.message
+        });
+    }
+});
+
 app.get('/algo',function(req,res,next){
 
     console.log("llego una peticion a algo")
