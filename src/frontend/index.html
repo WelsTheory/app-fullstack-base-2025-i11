@@ -20,73 +20,64 @@
             <!-- Page Body -->
             <div class="container">
                 <br>
-                <h3>Smart Home Web Client!</h3>
+                <h3>Modulos de ABS</h3>
                 <br/>
                 <div class="row">
                     <div class="col l2 s3 m3">
-                        <!-- Modal Trigger Agregar dispositivo -->
-                        <a id="btn-agregar-disp" class="waves-effect waves-light btn tooltipped" data-position="bottom" data-tooltip="Agregar nuevo dispositivo">
-                        <i id="btn-agregar-disp" class="material-icons right">add</i>Agregar</a>
+                        <!-- Modal Trigger Agregar un modulo -->
+                        <a id="btn-agregar-mod" class="waves-effect waves-light btn btn-green tooltipped" data-position="bottom" data-tooltip="Agregar nuevo módulo">
+                        <i id="btn-agregar-mod" class="material-icons right">add</i>Agregar Nuevo </a>
                     </div>
                 </div>
-            
-                <!-- Modal para eliminar un dispositivo-->
+                <!-- Modal para eliminar un modulo-->
                 <div id="modal-eliminar" class="modal">
                     <div class="modal-content">
                         <h5>¿Estás seguro que quieres hacer eso?</h5>
                         <p>Esta acción no se puede deshacer.</p>
                     </div>
                     <div class="modal-footer">
-                        <a id="confirma-eliminar" class="modal-close waves-effect waves-green btn">Sí, eliminar</a>
-                        <a id="cancela-eliminar" class="modal-close waves-effect waves-red btn">Cancelar</a>
+                        <a id="confirma-eliminar" class="modal-close waves-effect waves-green btn  btn-green">Sí, eliminar</a>
+                        <a id="cancela-eliminar" class="modal-close waves-effect waves-red btn  btn-green">Cancelar</a>
                     </div>
                 </div>
-                 <!--Fin modal eliminar -->
-
-
-                 <!-- Modal para agregar nuevo dispositivo -->
-                <div id="modal-new-device" class="modal">
+                <!-- Modal para agregar nuevo modulo -->
+                <div id="modal-new-mod" class="modal">
                     <div class="modal-content">
-                        <h5>Agregar nuevo dispositivo</h5>
+                        <h5>Agregar nuevo módulo</h5>
                         <div class="row">
-                            <!-- Comienza formulario -->
                             <form class="col s12">
                                 <div class="row">     
                                     <p>
-                                        <select class="browser-default" id="devType">
-                                            <option value="" disabled selected>Tipo de dispositivo</option>
-                                            <option value=0>Iluminación</option>
-                                            <option value=1>Persiana</option>
-                                        </select>
-                                                  
+                                        <select class="browser-default" id="modType">
+                                            <option value="" disabled selected>Tipo de módulo</option>
+                                            <option value=0>RF Versión 1</option>
+                                            <option value=1>RF Versión 2</option>
+                                        </select>     
                                     </p>
                                 </div>                            
                                 <div class="row">
                                     <div class="input-field col s10">
-                                        <input placeholder="Ej. Lámpara 1" id="dev-name" type="text" class="validate">
+                                        <input placeholder="Ej. Modulo Sur 1" id="modName" type="text" class="validate">
                                         <label for="name">Nombre</label>
                                     </div>
                                 </div>
                                 <div class="row"> 
                                     <div class="input-field col s10">
-                                        <input placeholder="Ej. Lámpara Cocina" id="description" type="text" class="validate">
+                                        <input placeholder="Ej. Modulo V2 - Sur #1" id="modDescription" type="text" class="validate">
                                         <label for="description">Descripción</label>
                                     </div>
                                 </div>
                             </form>
-                            <!-- Fin del formulario -->
                         </div>
                     </div>
-                    <!-- Botones Enviar/Cancelar del Modal-->
                     <div class="row">
                         <div class="modal-footer">
-                            <a id="cancelar-addDev" class="waves-effect waves-light btn btn-cancelar">Cancelar</a>
-                            <a id="btn-confirm-addDev" class="waves-effect waves-light btn btn-confirmar">Confirmar</a>
+                            <a id="cancelar-addMod" class="waves-effect waves-light btn  btn-green btn-cancelar">Cancelar</a>
+                            <a id="btn-confirm-addMod" class="waves-effect waves-light btn  btn-green btn-confirmar">Confirmar</a>
                         </div>
                     </div>
                 </div>
-                <!-- Fin de la estructura del modal-->
-                <!-- Modal para agregar nuevo dispositivo -->
+                <!-- Modal para editar modulo -->
                 <div id="modal-edit-device" class="modal">
                     <div class="modal-content">
                         <h5>Editar dispositivo</h5>
@@ -111,14 +102,14 @@
                     <!-- Botones Enviar/Cancelar del Modal-->
                     <div class="row">
                         <div class="modal-footer">
-                            <a id="cancelar-edit" class="waves-effect waves-light btn btn-cancelar">Cancelar</a>
-                            <a id="btn-confirm-edit" class="waves-effect waves-light btn btn-confirmar">Confirmar</a>
+                            <a id="cancelar-edit" class="waves-effect waves-light btn  btn-green btn-cancelar">Cancelar</a>
+                            <a id="btn-confirm-edit" class="waves-effect waves-light btn  btn-green btn-confirmar">Confirmar</a>
                         </div>
                     </div>
                 </div>
 
      
-                <div id="listaDisp" class="row">
+                <div id="listMod" class="row">
                     <div class="col l4 m6 s12">
                         <div class="card">
 
@@ -128,14 +119,14 @@
                 <!-- Botones de apagar/encender todo -->
                 <div class="col l3 s2 m2" style="display: flex; justify-content: flex-end; gap: 10px;">
                     <!-- Apagar todo -->
-                    <a id="btn-alldev-off" class="btn btn-alldev waves-effect waves-light">
-                      <i id="btn-alldev-off" class="material-icons left">power_settings_new</i>
+                    <a id="btn-todo-mod-off" class="btn btn-todo waves-effect waves-light  btn-green">
+                      <i id="btn-todo-mod-off" class="material-icons left">power_settings_new</i>
                       Apagar Todo
                     </a>
                   
                     <!-- Encender todo -->
-                    <a id="btn-alldev-on" class="btn btn-alldev waves-effect waves-light">
-                        <i id="btn-alldev-on"class="material-icons left">power_settings_new</i>
+                    <a id="btn-todo-mod-on" class="btn btn-todo waves-effect waves-light  btn-green">
+                        <i id="btn-todo-mod-on"class="material-icons left">power_settings_new</i>
                         Encender todo
                       </a>                      
                   </div>
@@ -143,12 +134,12 @@
             </div>
         </main>
 		<!-- Page Footer -->
-        <footer class="page-footer" style="background-color:#124580">
+        <footer class="page-footer" style="background-color:#2e8857">
             <div class="container">
                 <div class="row">
                     <div class="col l6 s6">
                         <h5 class="white-text">Smart Home</h5>
-                        <p class="grey-text text-lighten-4">Copyright ### - 2021</p>
+                        <p class="grey-text text-lighten-4">Copyright @wels - 2025</p>
                     </div>
                     <div class="col l6 s6">
                         <h5 class="white-text right-align">Contact</h5>

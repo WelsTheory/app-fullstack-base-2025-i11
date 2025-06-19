@@ -1,79 +1,85 @@
 declare const M;
-class Main implements EventListenerObject {
-    public initPageApp(): void {
+class Main implements EventListenerObject 
+{
+    public initPageApp(): void 
+    {
         let xhr: XMLHttpRequest = new XMLHttpRequest();
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState == 4) {
-                //console.log("Respuesta cruda:", xhr.responseText);
-                if (xhr.status == 200) {
-                        const response = JSON.parse(xhr.responseText);
-                        
-                        // Verificar estructura esperada
-                        if (!response.success || !Array.isArray(response.data)) {
-                            throw new Error("Formato de respuesta inválido");
-                        }
-
-                        const listaDis = response.data;
-                        let listaDisp = document.getElementById("listaDisp");
-                        
-                        if (!listaDisp) {
-                            throw new Error("Elemento listaDisp no encontrado");
-                        }
-
-                        let htmlContent = '';
-                        for (const disp of listaDis) {
-                            const checked = disp.state === 1 ? "checked" : "";
-                            const icono = disp.type === 0 ? "lightbulb" : "window";
-                            htmlContent += `
-                            <div class="col l4 m6 s12">
-                                <div class="card">
-                                    <div class="card-content">
-                                        <img src="./static/images/${icono}.png" alt="" class="circle">
-                                        <span class="card-title">${disp.name}
-                                         <a id = "btn-edit-${disp.id}" class="btn-floating btn-small waves-effect waves-blue btn-edit-device tooltipped" data-position="bottom" data-tooltip="Editar">
-                                            <i id ="edit-${disp.id}" class="small material-icons">edit</i></a>
-                                        <a id="btn-del-${disp.id}" class="btn-floating btn-small waves-effect waves-red btn-delete-device tooltipped" data-position="bottom" data-tooltip="Eliminar">
-                                            <i id="delete-${disp.id}" class="material-icons">delete</i>
-                                        </a>
-                                        </span>
-                                        <p>${disp.description}</p>
-                                    </div>
-                                    <div class="card-action">
-                                    <a href="#!" class="secondary-content">
-                                        <div class="switch" style="float:right;">
-                                            <label>
-                                            Off
-                                            <input id="disp-${disp.id}-state" type="checkbox" ${checked}>
-                                            <span class="lever"></span>
-                                            On
-                                            </label>
-                                        </div>
+        xhr.onreadystatechange = () => 
+        {
+            if (xhr.readyState == 4) 
+            {
+                if (xhr.status == 200) 
+                {
+                    const response = JSON.parse(xhr.responseText);
+                    if (!response.success || !Array.isArray(response.data)) 
+                    {
+                        throw new Error("Formato de respuesta inválido");
+                    }
+                    const dataMod = response.data;
+                    let listMod = document.getElementById("listMod");
+                    if (!listMod) 
+                    {
+                        throw new Error("Elemento listMod no encontrado");
+                    }
+                    let htmlContent = '';
+                    for (const data of dataMod) 
+                    {
+                        const checked = data.state === 1 ? "checked" : "";
+                        const icono = data.type === 0 ? "lightbulb" : "window";
+                        htmlContent += `
+                        <div class="col l4 m6 s12">
+                            <div class="card">
+                                <div class="card-content">
+                                    <img src="./static/images/${icono}.png" alt="" class="circle">
+                                    <span class="card-title">${data.name}
+                                        <a id = "btn-edit-${data.id}" class="btn-floating btn-small waves-effect btn-edit-device tooltipped btn-blue-hover" data-position="bottom" data-tooltip="Editar">
+                                        <i id ="edit-${data.id}" class="small material-icons">edit</i></a>
+                                    <a id="btn-del-${data.id}" class="btn-floating btn-small waves-effect btn-edit-device tooltipped btn-red-hover" data-position="bottom" data-tooltip="Eliminar">
+                                        <i id="delete-${data.id}" class="material-icons">delete</i>
                                     </a>
-                                    </div>
+                                    </span>
+                                    <p>${data.description}</p>
                                 </div>
-                            </div>`;
+                                <div class="card-action">
+                                <a href="#!" class="secondary-content">
+                                    <div class="switch" style="float:right;">
+                                        <label>
+                                        Off
+                                        <input id="data-${data.id}-state" type="checkbox" ${checked}>
+                                        <span class="lever"></span>
+                                        On
+                                        </label>
+                                    </div>
+                                </a>
+                                </div>
+                            </div>
+                        </div>`;
+                    }
+                    listMod.innerHTML = htmlContent;
+                    for (const data of dataMod) 
+                    {
+                        const delMod = document.getElementById("btn-del-" + data.id);
+                        if (delMod)
+                        {
+                            delMod.addEventListener("click", (ev) => this.deleteMod(ev));
                         }
-                        
-                        listaDisp.innerHTML = htmlContent;
-                        for (const disp of listaDis) {
-                            const delDisp = document.getElementById("btn-del-" + disp.id);
-                            if (delDisp) {
-                                delDisp.addEventListener("click", (ev) => this.delDevConfirm(ev));
-                            }
-                        }
-                        //listaDisp.innerHTML = htmlContent;
-                        for (let disp of listaDis) {
-                            let delDisp = document.getElementById("btn-edit-" + disp.id);
-                            delDisp.addEventListener("click",this);
-                        }       
-                        for (let disp of listaDis) {
-                            let checkDisp = document.getElementById("disp-" + disp.id +"-state");
-                            checkDisp.addEventListener("click", this);
-                        }
-                        var elems = document.querySelectorAll('.tooltipped');
-                        M.Tooltip.init(elems);
+                    }
+                    for (let data of dataMod) 
+                    {
+                        let editMod = document.getElementById("btn-edit-" + data.id);
+                        editMod.addEventListener("click",this);
+                    }       
+                    for (let data of dataMod) 
+                    {
+                        let checkMod = document.getElementById("data-" + data.id +"-state");
+                        checkMod.addEventListener("click", this);
+                    }
+                    var elems = document.querySelectorAll('.tooltipped');
+                    M.Tooltip.init(elems);
                     
-                } else {
+                } 
+                else 
+                {
                     console.error("Error HTTP:", xhr.status);
                 }
             }
@@ -81,26 +87,35 @@ class Main implements EventListenerObject {
         
         xhr.open("GET", "http://localhost:8000/devices", true);
         xhr.send();
-        let addNewDisp: HTMLElement | null = document.getElementById("btn-agregar-disp");
+        let addNewMod: HTMLElement | null = document.getElementById("btn-agregar-mod");
 
-        if (addNewDisp) {
-            addNewDisp.addEventListener("click", this);
-        } else {
-            console.error("No se encontró el botón con ID btn-agregar-disp");
+        if (addNewMod) 
+        {
+            addNewMod.addEventListener("click", this);
+        } 
+        else 
+        {
+            console.error("No se encontró el botón con ID btn-agregar-mod");
         }
 
-        let allDevOnBtn: HTMLElement | null = document.getElementById("btn-alldev-on");
-        let allDevOffBtn: HTMLElement | null = document.getElementById("btn-alldev-off");
+        let todoModOn: HTMLElement | null = document.getElementById("btn-todo-mod-on");
+        let todoModOff: HTMLElement | null = document.getElementById("btn-todo-mod-off");
 
-        if (allDevOnBtn) {
-            allDevOnBtn.addEventListener("click", this);
-        } else {
+        if (todoModOn) 
+        {
+            todoModOn.addEventListener("click", this);
+        } 
+        else 
+        {
             console.error("No se encontró el botón Encender Todo");
         }
 
-        if (allDevOffBtn) {
-            allDevOffBtn.addEventListener("click", this);
-        } else {
+        if (todoModOff) 
+        {
+            todoModOff.addEventListener("click", this);
+        } 
+        else 
+        {
             console.error("No se encontró el botón Apagar Todo");
         }
 
@@ -118,18 +133,18 @@ class Main implements EventListenerObject {
         const id = objetoClick.id;
 
         if (id.startsWith("delete-")) {
-            this.delDevConfirm(ev);
+            this.deleteMod(ev);
         }
-        else if(objetoClick.id.match(/disp-\d+-state/))
+        else if(objetoClick.id.match(/data-\d+-state/))
         {         
             this.changeDevState(ev);
         }
-        else if (id === "btn-agregar-disp") {
-            this.newDeviceForm(ev);
+        else if (id.startsWith("btn-agregar-mod")) {
+            this.newAddModule(ev);
         }
         else if( id.startsWith("edit")){
             this.editDevConfirm(ev);
-        }else if(id.startsWith("btn-alldev")){
+        }else if(id.startsWith("btn-todo")){
             this.allDevState(ev);
         }
         else {
@@ -172,40 +187,31 @@ class Main implements EventListenerObject {
         xhr.send(JSON.stringify(state));
     }
 
-    public newDeviceForm(ev:Event){
-        // Conjunto de operaciones para agregar un nuevo dispositivo
+    public newAddModule(ev:Event)
+    {
+        var modal = document.getElementById("modal-new-mod");
 
-        // Objeto Modal, donde está el formulario para nuevo disp.
-        var modal = document.getElementById("modal-new-device");
+        var nameField: HTMLInputElement = <HTMLInputElement> document.getElementById("modName");
+        var descField: HTMLInputElement = <HTMLInputElement> document.getElementById("modDescription");
+        var typeField: HTMLInputElement = <HTMLInputElement> document.getElementById("modType");
 
-        // Campos del formulario
-        // Campos del formulario usando JavaScript puro
-        var nameField: HTMLInputElement = <HTMLInputElement> document.getElementById("dev-name");
-        var descField: HTMLInputElement = <HTMLInputElement> document.getElementById("description");
-        var typeField: HTMLInputElement = <HTMLInputElement> document.getElementById("devType");
-
-        // Botón de cancelar para cerrar la operación
-        var cancel = document.getElementById("cancelar-addDev");
-        // Cierra el modal y resetea los campos
+        var cancel = document.getElementById("cancelar-addMod");
         cancel.addEventListener("click", ()=>{modal.style.display= "none";
                                             nameField.value = "";
                                             descField.value = "";
         })
         
-        // Post para agregar el dispositivo
         var addDevHandler= (ev:Event)=>{
-            let devName:string = nameField.value;
-            let devDesc:string = descField.value;
-            let devType:string = typeField.value;
-            let newDevice = {"name":devName, "description":devDesc, "state":false, "type":devType}
+            let modName:string = nameField.value;
+            let modDescription:string = descField.value;
+            let modType:string = typeField.value;
+            let newModulo = {"name":modName, "description":modDescription, "state":false, "type":modType}
             let xhr = new XMLHttpRequest();
             xhr.open("POST", "http://localhost:8000/devices/add/", true);
             xhr.setRequestHeader("Content-Type", "application/json");
 
-            // ✅ ESTA PARTE ES NUEVA:
             xhr.onload = function () {
                 if (xhr.status === 200) {
-                    // Si la respuesta es exitosa, cerrar modal, limpiar y recargar
                     modal.style.display = "none";
                     nameField.value = "";
                     descField.value = "";
@@ -217,20 +223,16 @@ class Main implements EventListenerObject {
                 }
             };
 
-            xhr.send(JSON.stringify(newDevice));
+            xhr.send(JSON.stringify(newModulo));
         }
-        
-        // Boton de confirmar el nuevo dispositivo
-        var addConfirmBtn = document.getElementById("btn-confirm-addDev");
+        var addConfirmBtn = document.getElementById("btn-confirm-addMod");
         addConfirmBtn.addEventListener("click",addDevHandler);    
-
-        // Abrir modal
         modal.style.display = "block";
     }
 
 
     // Método del main para eliminar dispositivos
-    public delDevConfirm(ev: Event) {
+    public deleteMod(ev: Event) {
         // Toma id de dispositivo a eliminar
         console.log("Modal Element:", modal);
         var id = (ev.target as HTMLElement).id.split("-")[1];

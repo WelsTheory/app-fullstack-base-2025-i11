@@ -13,8 +13,55 @@ main {
     z-index: 2;
 }
 
+.btn-green {
+    background-color: #2e8857 !important; /* !important para sobrescribir Materialize */
+}
+
+.btn-red-hover {
+background-color: #2e8857 !important;
+transition: background-color 0.3s ease;
+}
+
+.btn-red-hover:hover {
+background-color: red !important; /* aquí puedes poner el rojo que prefieras */
+}
+
+.btn-red-hover .waves-ripple {
+background-color: rgba(255, 255, 255, 0.4); /* color de la onda */
+}
+
+
+/* Botón azul claro que cambia a azul más claro */
+.btn-blue-hover {
+background-color: #2e8857 !important; /* azul claro inicial */
+transition: background-color 0.3s ease;
+}
+
+.btn-blue-hover:hover {
+background-color: #389cdf !important; /* azul más claro al hover */
+}
+
+.btn-blue-hover .waves-ripple {
+background-color: rgba(255, 255, 255, 0.4);
+}
+
+.input-field label {
+    color: #2e8857 !important;
+    border-bottom: #2e8857;
+  }
+
+  .input-field label ::before {
+    color: #2e8857 !important;
+    border-bottom: #2e8857;
+  }
+  
+  .input-field label.active {
+    color: #2e8857 !important;
+    border-bottom: #2e8857;
+  }
+
 .header-nav{
-    background-color: #26a69a;
+    background-color: #2e8857;
 }
 
 
@@ -27,7 +74,7 @@ main {
     font-weight: bold;
 }
 
-#listaDisp .card {
+#listMod .card {
     border-radius: 12px;           /* esquinas redondeadas */
     border: 1px solid #e0e0e0;     /* borde suave */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* sombra ligera */
@@ -36,23 +83,23 @@ main {
     transition: transform 0.2s ease, box-shadow 0.2s ease; /* animación suave */
 }
 
-#listaDisp .card:hover {
+#listMod .card:hover {
     transform: translateY(-5px);   /* efecto de elevación al pasar el mouse */
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
-#listaDisp .card .card-content {
+#listMod .card .card-content {
     background-color: #fafafa;     /* color de fondo de contenido */
     border-radius: 10px;
 }
 
-#listaDisp .card .card-title {
+#listMod .card .card-title {
     font-weight: bold;
     color: #2e7d32;               /* color bonito para el título */
     margin-bottom: 10px;
 }
 
-#listaDisp .card .card-action {
+#listMod .card .card-action {
     border-top: 1px solid #e0e0e0; /* línea divisoria arriba de botones */
     padding-top: 10px;
     display: flex;
@@ -65,20 +112,20 @@ main {
     color: rgb(161, 48, 48);
     }
     
-    .btn-edit-device:hover{
-    background-color: rgba(38, 128, 207, 0.877);
-    }
-    
-    .btn-delete-device:hover{
-    background-color: #ff3527ce;
-    }
+.btn-edit-device:hover{
+background-color: rgba(38, 128, 207, 0.877);
+}
+
+.btn-delete-device:hover{
+background-color: #ff3527ce;
+}
 
 .btn-confirmar:hover{
     background: rgba(9, 161, 9, 0.753);
     }
-    .btn-cancelar:hover{
-    background: rgba(184, 16, 16, 0.685);
-    }
+.btn-cancelar:hover{
+background: rgba(184, 16, 16, 0.685);
+}
 
 /* Modal */
 .modal {
@@ -91,24 +138,24 @@ main {
     height: auto; 
     }
     
-    .modal-delete-device{
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 3; /* Sit on top */
-    left: 0;
-    top: 25%;
-    width: 25%; 
-    height: auto; 
-    }
+.modal-delete-device{
+display: none; /* Hidden by default */
+position: fixed; /* Stay in place */
+z-index: 3; /* Sit on top */
+left: 0;
+top: 25%;
+width: 25%; 
+height: auto; 
+}
     
     /* Modal Content/Box */
-    .modal-content {
-    background-color: #fefefe;
-    margin: 0% auto; /* 15% from the top and centered */
-    padding: 5px;
-    height: 80%;
-    width: 100%; /* Could be more or less, depending on screen size */
-    }
+.modal-content {
+background-color: #fefefe;
+margin: 0% auto; /* 15% from the top and centered */
+padding: 5px;
+height: 80%;
+width: 100%; /* Could be more or less, depending on screen size */
+}
     
     /* The Close Button */
     .close {
@@ -124,3 +171,15 @@ main {
     text-decoration: none;
     cursor: pointer;
     } 
+
+input[type="checkbox"]:checked + .lever {
+    background-color: #4aaf78 !important;
+    }
+      
+input[type="checkbox"]:checked + .lever::before {
+    background-color: #4aaf78 !important;
+}
+      
+input[type="checkbox"]:checked + .lever::after {
+    background-color: #2e8857 !important;
+}
