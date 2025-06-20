@@ -1,6 +1,13 @@
 declare const M;
 class Main implements EventListenerObject 
 {
+    /**
+     * Inicializa la página de la aplicación:
+     * - Realiza la solicitud GET para cargar todos los módulos desde el servidor.
+     * - Renderiza dinámicamente las tarjetas de módulos con sus controles.
+     * - Asigna eventos a botones de editar, eliminar y switches de encendido/apagado.
+     * - Configura tooltips y listeners para los botones globales "Encender todo" y "Apagar todo".
+    */
     public initPageApp(): void 
     {
         let xhr: XMLHttpRequest = new XMLHttpRequest();
@@ -25,12 +32,12 @@ class Main implements EventListenerObject
                     for (const data of dataMod) 
                     {
                         const checked = data.state === 1 ? "checked" : "";
-                        const icono = data.type === 0 ? "lightbulb" : "window";
+                        const icono = data.type === 0 ? "version1" : "version2";
                         htmlContent += `
                         <div class="col l4 m6 s12">
                             <div class="card">
                                 <div class="card-content">
-                                    <img src="./static/images/${icono}.png" alt="" class="circle">
+                                    <img src="./static/images/${icono}.png" alt="" class="circle" width="15%">
                                     <span class="card-title">${data.name}
                                         <a id = "btn-edit-${data.id}" class="btn-floating btn-small waves-effect btn-edit-device tooltipped btn-blue-hover" data-position="bottom" data-tooltip="Editar">
                                         <i id ="edit-${data.id}" class="small material-icons">edit</i></a>
@@ -119,13 +126,20 @@ class Main implements EventListenerObject
 
     }
 
+    /**
+     * Inicializa todos los tooltips en los elementos con la clase `.tooltipped`.
+     * Utiliza el componente Tooltip de Materialize para mostrar información contextual.
+    */
     public addTooltips()
     {
         var elems = document.querySelectorAll('.tooltipped');
         var instances = M.Tooltip.init(elems, Option);
     }
-
-
+    /**
+     * Controla todos los eventos de clic delegados en los elementos de la interfaz.
+     * Identifica la acción a ejecutar según el ID del elemento clickeado
+     * y llama a la función correspondiente (eliminar, cambiar estado, agregar, editar o cambiar estado de todos).
+    */
     public handleEvent(ev: Event): void 
     {
         const objetoClick = ev.target as HTMLElement;
@@ -158,6 +172,10 @@ class Main implements EventListenerObject
         }
     }
 
+    /**
+     * Cambia el estado de todos los módulos (encender o apagar todos).
+     * y envía la solicitud correspondiente al servidor.
+    */
     public allStateModule(ev: Event) 
     {
         const idModule = (ev.target as HTMLElement).id;
@@ -187,6 +205,11 @@ class Main implements EventListenerObject
         xhr.send(JSON.stringify(next_state));
     }
 
+    /**
+     * Muestra el formulario modal para agregar un nuevo módulo.
+     * Configura los campos del formulario(nombre, descripción y tipo), 
+     * maneja la confirmación y el cierre del modal.
+    */
     public newAddModule(ev:Event)
     {
         var modal = document.getElementById("modal-new-mod");
@@ -199,6 +222,7 @@ class Main implements EventListenerObject
             modal.style.display= "none";
             nameModule.value = "";
             descModule.value = "";
+            typeModule.value = "";
         })
         
         var addModuleHandler= (ev:Event)=>
@@ -235,6 +259,10 @@ class Main implements EventListenerObject
         modal.style.display = "block";
     }
 
+    /**
+     * Muestra el modal de confirmación para eliminar un módulo.
+     * Gestiona la cancelación y la confirmación de la eliminación enviando la solicitud al servidor.
+    */
     public deleteModule(ev: Event) 
     {
         var idModule = (ev.target as HTMLElement).id.split("-")[1];
@@ -273,26 +301,34 @@ class Main implements EventListenerObject
         instance.open();
     }
 
+    /**
+     * Abre el formulario modal de edición para un módulo existente.
+     * Carga los datos actuales (nombre, descripción y tipo), 
+     * gestiona la confirmación de cambios y cierra el modal.
+    */
     public editModule(ev:Event): void
     {
         const idModule = (ev.target as HTMLElement).id.split("-")[1];
-        const modal = document.getElementById("modal-edit-device");
+        const modal = document.getElementById("modal-edit-module");
         const instance = M.Modal.getInstance(modal);
-        const nameModule = document.getElementById("edit-dev-name") as HTMLInputElement;
+        const nameModule = document.getElementById("edit-mod-name") as HTMLInputElement;
         const descModule = document.getElementById("edit-description") as HTMLInputElement;
+        const typeModule = document.getElementById("edit-type") as HTMLInputElement;
         const cancelBtn = document.getElementById("cancelar-edit");
         cancelBtn.onclick = () => 
         {
             instance.close();
             nameModule.value = "";
             descModule.value = "";
+            typeModule.value = "";
         };
         const confirmBtn = document.getElementById("btn-confirm-edit");
         confirmBtn.onclick = () => 
         {
             const ModName = nameModule.value.trim();
             const ModDesc = descModule.value.trim();
-            if (!ModName || !ModDesc) 
+            const ModType = typeModule.value.trim();
+            if (!ModName || !ModDesc || !ModType) 
             {
                 alert("Por favor complete todos los campos.");
                 return;
@@ -301,7 +337,8 @@ class Main implements EventListenerObject
             {
                 id: idModule,
                 name: ModName,
-                description: ModDesc
+                description: ModDesc,
+                type: ModType
             };
             const xhr = new XMLHttpRequest();
             xhr.open("POST", "http://localhost:8000/devices/edit/", true);
@@ -311,6 +348,9 @@ class Main implements EventListenerObject
                 if (xhr.status === 200) 
                 {
                     console.log("Dispositivo editado:", xhr.responseText);
+                    nameModule.value = "";
+                    descModule.value = "";
+                    typeModule.value = "";
                     instance.close();
                     window.location.reload();
                 } 
@@ -331,6 +371,10 @@ class Main implements EventListenerObject
         instance.open();
     }
     
+    /**
+     * Cambia el estado (encendido/apagado) de un módulo individual.
+     * Envía la solicitud de actualización al servidor.
+    */
     public changeStateModule(ev: Event) 
     {
         const checkBox = ev.target as HTMLInputElement;
@@ -367,6 +411,10 @@ class Main implements EventListenerObject
         
 }
 
+/**
+ * Inicializa la aplicación cuando la ventana se ha cargado por completo.
+ * Crea la instancia principal, configura la página y activa todos los modales de Materialize.
+*/
 window.addEventListener("load", () => 
 {
    let miObjMain: Main = new Main();

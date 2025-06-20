@@ -1,3 +1,9 @@
+<!-- 
+  Archivo principal de interfaz de usuario del Sistema ABS.
+  Contiene la estructura base: navegación, cuerpo, modales para CRUD de módulos,
+  acciones globales (Encender/Apagar Todo) y pie de página.
+  Depende de Materialize CSS y JS para estilos y componentes dinámicos.
+-->
 <!DOCTYPE html>
   <html>
     <head>
@@ -8,7 +14,7 @@
     </head>
     <body>
         <main>
-            <!-- Navigation bar -->
+            <!-- Barra de navegación principal: muestra el nombre del sistema a la izquierda y un enlace de ayuda a la derecha -->
             <nav class="header-nav">
                 <div class="nav-wrapper">
                     <a href="#!" class="brand-logo left" style="margin-left: 15px;">SISTEMA ABS</a>
@@ -17,19 +23,19 @@
                     </ul>
                 </div>
             </nav>	
-            <!-- Page Body -->
+            <!-- Contenedor principal de la página: muestra el título, botones de acciones y la lista de módulos -->
             <div class="container">
                 <br>
                 <h3>Modulos de ABS</h3>
                 <br/>
                 <div class="row">
                     <div class="col l2 s3 m3">
-                        <!-- Modal Trigger Agregar un modulo -->
+                        <!-- Botón principal para abrir el modal de creación de un nuevo módulo -->
                         <a id="btn-agregar-mod" class="waves-effect waves-light btn btn-green tooltipped" data-position="bottom" data-tooltip="Agregar nuevo módulo">
                         <i id="btn-agregar-mod" class="material-icons right">add</i>Agregar Nuevo </a>
                     </div>
                 </div>
-                <!-- Modal para eliminar un modulo-->
+                <!-- Modal de confirmación para eliminar un módulo: solicita confirmación del usuario antes de borrar -->
                 <div id="modal-eliminar" class="modal">
                     <div class="modal-content">
                         <h5>¿Estás seguro que quieres hacer eso?</h5>
@@ -40,7 +46,7 @@
                         <a id="cancela-eliminar" class="modal-close waves-effect waves-red btn  btn-green">Cancelar</a>
                     </div>
                 </div>
-                <!-- Modal para agregar nuevo modulo -->
+                <!-- Modal de formulario para crear un nuevo módulo: permite seleccionar tipo, nombre y descripción -->
                 <div id="modal-new-mod" class="modal">
                     <div class="modal-content">
                         <h5>Agregar nuevo módulo</h5>
@@ -77,27 +83,33 @@
                         </div>
                     </div>
                 </div>
-                <!-- Modal para editar modulo -->
-                <div id="modal-edit-device" class="modal">
+                <!-- Modal de formulario para editar los datos de un módulo existente: nombre, descripción y tipo -->
+                <div id="modal-edit-module" class="modal">
                     <div class="modal-content">
                         <h5>Editar dispositivo</h5>
                         <div class="row">                       
                                 <div class="row">
                                     <div class="input-field col s10">
-                                        <input placeholder="Ej. Lámpara 1" id="edit-dev-name" type="text" class="validate">
+                                        <input placeholder="Ej. Oeste #5" id="edit-mod-name" type="text" class="validate">
                                         <label for="name">Nombre</label>
                                     </div>
                                 </div>
                                 <div class="row"> 
                                     <div class="input-field col s10">
-                                        <input placeholder="Ej. Lámpara Cocina" id="edit-description" type="text" class="validate">
+                                        <input placeholder="Ej. Módulo V1 Oeste #5" id="edit-description" type="text" class="validate">
                                         <label for="description">Descripción</label>
+                                    </div>
+                                </div>
+                                <div class="row"> 
+                                    <div class="input-field col s10">
+                                        <input placeholder="Ej. Tipo => 0: Version | 1:Version 2" id="edit-type" type="text" class="validate">
+                                        <label for="type">Tipo</label>
                                     </div>
                                 </div>
                             </form>
                         </div>
                     </div>
-                    <!-- Botones Enviar/Cancelar del Modal-->
+                    <!-- Botones de acción dentro del modal de edición: permiten confirmar o cancelar los cambios -->
                     <div class="row">
                         <div class="modal-footer">
                             <a id="cancelar-edit" class="waves-effect waves-light btn  btn-green btn-cancelar">Cancelar</a>
@@ -112,7 +124,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- Botones de apagar/encender todo -->
+                <!-- Botones globales para encender o apagar todos los módulos al mismo tiempo -->
                 <div class="col l3 s2 m2" style="display: flex; justify-content: flex-end; gap: 10px;">
                     <a id="btn-todo-off" class="btn btn-todo- waves-effect waves-light  btn-green">
                       <i id="btn-todo-off" class="material-icons left">power_settings_new</i>
@@ -145,7 +157,7 @@
                 </div>
             </div>
         </footer>
-		<!--JavaScript at end of body for optimized loading-->
+		<!-- Inclusión de librerías JavaScript: primero Materialize para la UI y luego el script principal de la app -->
         <script type="text/javascript" src="./static/js/materialize.min.js"></script>
         <script type="text/javascript" src="js/main.js"></script>
     </body>

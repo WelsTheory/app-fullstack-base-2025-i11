@@ -1,16 +1,27 @@
+/**
+ * Configura el servidor Express:
+ * - Define el puerto.
+ * - Importa Express y utilidades para la base de datos.
+ * - Inicializa la aplicación.
+ * - Configura el middleware para parsear JSON en las peticiones entrantes.
+ */
+
 var PORT    = 3000;
 
 var express = require('express');
 
 var app     = express();
+
 var utils   = require('./mysql-connector');
 
-// to parse application/json
 app.use(express.json()); 
-// to serve static files
+
 app.use(express.static('/home/node/app/static/'));
 
-//=======[ Main module code ]==================================================
+/**
+ * GET /devices
+ * Obtiene la lista de todos los modulos almacenados en la base de datos.
+ */
 app.get('/devices', (req, res) => 
 {
     utils.query("SELECT * FROM Devices", (error, results) => 
@@ -30,6 +41,10 @@ app.get('/devices', (req, res) =>
     });
 });
 
+/**
+ * GET /devices/:id
+ * Obtiene la información de un único módulo identificado por su ID.
+ */
 app.get('/devices/:id', (req, res) => 
 {
     const deviceId = req.params.id;
@@ -59,6 +74,10 @@ app.get('/devices/:id', (req, res) =>
     );
 });
 
+/**
+ * POST /devices/changestate
+ * Cambia el estado (on/off) de un módulo específico usando su ID.
+ */
 app.post('/devices/changestate', async (req, res) => 
 {
     const { id, state } = req.body;
@@ -91,8 +110,10 @@ app.post('/devices/changestate', async (req, res) =>
     }
 });
 
-
-
+/**
+ * POST /devices/delete/
+ * Elimina un módulo de la base de datos usando su ID.
+ */
 app.post('/devices/delete/', async (req, res) => 
 {
     const deviceId = parseInt(req.body.id);
@@ -123,6 +144,10 @@ app.post('/devices/delete/', async (req, res) =>
     }
 });
 
+/**
+ * POST /devices/add/
+ * Agrega un nuevo módulo a la base de datos con nombre, descripción, estado y tipo.
+ */
 app.post('/devices/add/', (req, res) => 
 {
     const sql = "INSERT INTO Devices (name, description,state,type) VALUES (?, ?,?,?)";
@@ -151,20 +176,24 @@ app.post('/devices/add/', (req, res) =>
     });
 });
 
+/**
+ * POST /devices/edit/
+ * Edita los datos de un módulo existente: nombre, descripción y tipo.
+ */
 app.post('/devices/edit/', async (req, res) => 
 {
-    const { id, name, description } = req.body;
+    const { id, name, description,type } = req.body;
     if (!id || !name || !description) {
         return res.status(400).json({
             success: false,
-            message: "Faltan campos obligatorios: id, name o description."
+            message: "Faltan campos obligatorios: id, name, description o type."
         });
     }
     try 
     {
         const result = await utils.query(
-            "UPDATE Devices SET name = ?, description = ? WHERE id = ?",
-            [name, description, id]
+            "UPDATE Devices SET name = ?, description = ?, type = ? WHERE id = ?",
+            [name, description,type, id]
         );
         if (result.affectedRows === 0) 
         {
@@ -191,6 +220,10 @@ app.post('/devices/edit/', async (req, res) =>
     }
 });
 
+/**
+ * POST /devices/all
+ * Cambia el estado (on/off) de todos los módulos en la base de datos al mismo valor.
+ */
 app.post('/devices/all', async (req, res) => 
 {
     const newState = req.body.state;
@@ -221,6 +254,10 @@ app.post('/devices/all', async (req, res) =>
     }
 });
 
+/**
+ * app.listen
+ * Inicia el servidor Express en el puerto especificado y muestra un mensaje de confirmación en la consola.
+ */
 app.listen(PORT, function(req, res) {
     console.log("NodeJS API running correctly");
 });

@@ -14,56 +14,54 @@ main {
 }
 
 .btn-green {
-    background-color: #2e8857 !important; /* !important para sobrescribir Materialize */
+    background-color: #2e8857 !important;
 }
 
 .btn-red-hover {
-background-color: #2e8857 !important;
-transition: background-color 0.3s ease;
+    background-color: #2e8857 !important;
+    transition: background-color 0.3s ease;
 }
 
 .btn-red-hover:hover {
-background-color: red !important; /* aquí puedes poner el rojo que prefieras */
+    background-color: red !important; 
 }
 
 .btn-red-hover .waves-ripple {
-background-color: rgba(255, 255, 255, 0.4); /* color de la onda */
+    background-color: rgba(255, 255, 255, 0.4);
 }
 
 
-/* Botón azul claro que cambia a azul más claro */
 .btn-blue-hover {
-background-color: #2e8857 !important; /* azul claro inicial */
-transition: background-color 0.3s ease;
+    background-color: #2e8857 !important;
+    transition: background-color 0.3s ease;
 }
 
 .btn-blue-hover:hover {
-background-color: #389cdf !important; /* azul más claro al hover */
+    background-color: #389cdf !important; 
 }
 
 .btn-blue-hover .waves-ripple {
-background-color: rgba(255, 255, 255, 0.4);
+    background-color: rgba(255, 255, 255, 0.4);
 }
 
 .input-field label {
     color: #2e8857 !important;
     border-bottom: #2e8857;
-  }
+}
 
-  .input-field label ::before {
+.input-field label ::before {
     color: #2e8857 !important;
     border-bottom: #2e8857;
-  }
-  
-  .input-field label.active {
+}
+
+.input-field label.active {
     color: #2e8857 !important;
     border-bottom: #2e8857;
-  }
+}
 
 .header-nav{
     background-color: #2e8857;
 }
-
 
 #botones{
         text-align: center;
@@ -75,32 +73,32 @@ background-color: rgba(255, 255, 255, 0.4);
 }
 
 #listMod .card {
-    border-radius: 12px;           /* esquinas redondeadas */
-    border: 1px solid #e0e0e0;     /* borde suave */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* sombra ligera */
-    margin-bottom: 20px;           /* espacio entre tarjetas */
-    padding: 10px;                 /* espacio interior */
-    transition: transform 0.2s ease, box-shadow 0.2s ease; /* animación suave */
+    border-radius: 12px;          
+    border: 1px solid #e0e0e0;    
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    margin-bottom: 20px;          
+    padding: 10px;                 
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 #listMod .card:hover {
-    transform: translateY(-5px);   /* efecto de elevación al pasar el mouse */
+    transform: translateY(-5px);   
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 #listMod .card .card-content {
-    background-color: #fafafa;     /* color de fondo de contenido */
+    background-color: #fafafa;   
     border-radius: 10px;
 }
 
 #listMod .card .card-title {
     font-weight: bold;
-    color: #2e7d32;               /* color bonito para el título */
+    color: #2e7d32;               
     margin-bottom: 10px;
 }
 
 #listMod .card .card-action {
-    border-top: 1px solid #e0e0e0; /* línea divisoria arriba de botones */
+    border-top: 1px solid #e0e0e0; 
     padding-top: 10px;
     display: flex;
     justify-content: space-between;
@@ -113,68 +111,66 @@ background-color: rgba(255, 255, 255, 0.4);
     }
     
 .btn-edit-device:hover{
-background-color: rgba(38, 128, 207, 0.877);
+    background-color: rgba(38, 128, 207, 0.877);
 }
 
 .btn-delete-device:hover{
-background-color: #ff3527ce;
+    background-color: #ff3527ce;
 }
 
 .btn-confirmar:hover{
     background: rgba(9, 161, 9, 0.753);
-    }
-.btn-cancelar:hover{
-background: rgba(184, 16, 16, 0.685);
 }
 
-/* Modal */
+.btn-cancelar:hover{
+    background: rgba(184, 16, 16, 0.685);
+}
+
 .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 3; /* Sit on top */
+    display: none; 
+    position: fixed;
+    z-index: 3; 
     left: 0;
     top: 25%;
     width: 20%; 
     height: auto; 
-    }
+}
     
 .modal-delete-device{
-display: none; /* Hidden by default */
-position: fixed; /* Stay in place */
-z-index: 3; /* Sit on top */
-left: 0;
-top: 25%;
-width: 25%; 
-height: auto; 
+    display: none; 
+    position: fixed;
+    z-index: 3; 
+    left: 0;
+    top: 25%;
+    width: 25%; 
+    height: auto; 
 }
     
-    /* Modal Content/Box */
 .modal-content {
-background-color: #fefefe;
-margin: 0% auto; /* 15% from the top and centered */
-padding: 5px;
-height: 80%;
-width: 100%; /* Could be more or less, depending on screen size */
+    background-color: #fefefe;
+    margin: 0% auto;
+    padding: 5px;
+    height: 80%;
+    width: 100%;
 }
     
-    /* The Close Button */
-    .close {
+.close {
     color: #aaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
-    }
+}
     
-    .close:hover,
-    .close:focus {
+.close:hover,
+.close:focus {
     color: black;
     text-decoration: none;
     cursor: pointer;
-    } 
+} 
 
 input[type="checkbox"]:checked + .lever {
     background-color: #4aaf78 !important;
-    }
+}
       
 input[type="checkbox"]:checked + .lever::before {
     background-color: #4aaf78 !important;
