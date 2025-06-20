@@ -1,8 +1,72 @@
-<a href="https://www.gotoiot.com/">
-    <img src="doc/gotoiot-logo.png" alt="logo" title="Goto IoT" align="right" width="60" height="60" />
-</a>
+# 🌐 Sistema ABS - Smart Home Fullstack 🚀
 
-Web App Full Stack Base
+Este proyecto es una aplicación web **Full Stack IoT** que te permite **gestionar módulos de un centro de investigación** (encendido, apagado, tipos de versión, etc.) desde una interfaz web amigable.
+
+👉 Desarrollada con **Node.js**, **TypeScript**, **MySQL** y **Materialize CSS**, ejecutándose dentro de **contenedores Docker** para facilitar su despliegue y escalabilidad.
+
+> ⭐ **¡Si te resulta útil, no olvides darle una estrella en Github!**
+
+## 📊 Arquitectura del Sistema
+
+A continuación se muestra un diagrama general del flujo de la aplicación:
+
+![Arquitectura](doc/architecture.png)
+
+- **Frontend (SPA)**: Desarrollado en TypeScript + Materialize CSS.
+- **Backend (API REST)**: NodeJS expone endpoints para gestionar dispositivos.
+- **Base de datos (MySQL)**: Guarda el estado y descripción de cada módulo.
+- **Admin DB (PHPMyAdmin)**: Para consultas y gestión manual de la base.
+
+## 🖼️ Capturas de pantalla 📸
+
+A continuación se muestra cómo luce la aplicación en funcionamiento:
+
+### 📌 Página principal
+![Home](doc/screenshots/home.png)
+
+### 📌 Agregar módulo
+![Agregar](doc/screenshots/add.png)
+
+### 📌 Confirmar eliminación
+![Eliminar](doc/screenshots/delete.png)
+
+### 📌 Encender y apagar todo
+![Encender y Apagar](doc/screenshots/on_off.png)
+
+---
+
+✅ **Ejemplos de uso:**
+
+- Visualiza todos los dispositivos y su estado en tiempo real.
+- Agrega, edita o elimina módulos fácilmente.
+- Enciende o apaga todos los dispositivos de forma masiva.
+
+## 🔗 Referencia rápida de la API
+
+| Método | Endpoint                | Descripción                              |
+|--------|-------------------------|------------------------------------------|
+| GET    | `/devices`              | Obtener todos los dispositivos.          |
+| GET    | `/devices/:id`          | Obtener dispositivo por ID.              |
+| POST   | `/devices/add`          | Agregar un nuevo dispositivo.            |
+| POST   | `/devices/edit`         | Editar un dispositivo existente.         |
+| POST   | `/devices/delete`       | Eliminar un dispositivo.                 |
+| POST   | `/devices/changestate`  | Cambiar el estado de un dispositivo.     |
+| POST   | `/devices/all`          | Encender o apagar todos los dispositivos.|
+
+> Puedes usar herramientas como Postman para probar cada endpoint.
+
+## 📌 Créditos y agradecimientos
+
+Este proyecto se desarrolló con la ayuda de:
+- [Goto IoT](https://www.gotoiot.com/) por la base fullstack.
+- [Materialize CSS](https://materializecss.com/) para la UI.
+- El curso de Desarrollo de Aplicaciones Web y a la [plantilla base](https://github.com/mramos88/app-fullstack-base-2025-i11)
+
+¡Gracias a todos los colaboradores y usuarios por su apoyo y sugerencias!
+
+===================================================================
+
+Readme de Plantilla Base: Web App Full Stack
 =======================
 
 *Ayudaría mucho si apoyaras este proyecto con una ⭐ en Github!*
@@ -38,7 +102,7 @@ Continua con la descarga del código cuando tengas las dependencias instaladas y
 Para descargar el código, lo más conveniente es que realices un `fork` de este proyecto a tu cuenta personal haciendo click en [este link](https://github.com/gotoiot/app-fullstack-base/fork). Una vez que ya tengas el fork a tu cuenta, descargalo con este comando (acordate de poner tu usuario en el link):
 
 ```
-git clone https://github.com/USER/app-fullstack-base.git
+git clone https://github.com/welstheory/app-fullstack-base.git
 ```
 
 > En caso que no tengas una cuenta en Github podes clonar directamente este repo.
