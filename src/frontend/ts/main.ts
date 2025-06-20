@@ -61,7 +61,7 @@ class Main implements EventListenerObject
                         const delMod = document.getElementById("btn-del-" + data.id);
                         if (delMod)
                         {
-                            delMod.addEventListener("click", (ev) => this.deleteMod(ev));
+                            delMod.addEventListener("click", (ev) => this.deleteModule(ev));
                         }
                     }
                     for (let data of dataMod) 
@@ -71,7 +71,7 @@ class Main implements EventListenerObject
                     }       
                     for (let data of dataMod) 
                     {
-                        let checkMod = document.getElementById("data-" + data.id +"-state");
+                        let checkMod = document.getElementById("data-"+ data.id +"-state");
                         checkMod.addEventListener("click", this);
                     }
                     var elems = document.querySelectorAll('.tooltipped');
@@ -97,10 +97,8 @@ class Main implements EventListenerObject
         {
             console.error("No se encontró el botón con ID btn-agregar-mod");
         }
-
-        let todoModOn: HTMLElement | null = document.getElementById("btn-todo-mod-on");
-        let todoModOff: HTMLElement | null = document.getElementById("btn-todo-mod-off");
-
+        let todoModOn: HTMLElement | null = document.getElementById("btn-todo-on");
+        let todoModOff: HTMLElement | null = document.getElementById("btn-todo-off");
         if (todoModOn) 
         {
             todoModOn.addEventListener("click", this);
@@ -121,273 +119,258 @@ class Main implements EventListenerObject
 
     }
 
-    public addTooltips(){
+    public addTooltips()
+    {
         var elems = document.querySelectorAll('.tooltipped');
         var instances = M.Tooltip.init(elems, Option);
     }
 
 
-    public handleEvent(ev: Event): void {
-        console.log(ev);
+    public handleEvent(ev: Event): void 
+    {
         const objetoClick = ev.target as HTMLElement;
         const id = objetoClick.id;
-
-        if (id.startsWith("delete-")) {
-            this.deleteMod(ev);
+        if (id.startsWith("delete-")) 
+        {
+            this.deleteModule(ev);
         }
         else if(objetoClick.id.match(/data-\d+-state/))
         {         
-            this.changeDevState(ev);
+            this.changeStateModule(ev);
         }
-        else if (id.startsWith("btn-agregar-mod")) {
+        else if (id.startsWith("btn-agregar-mod")) 
+        {
             this.newAddModule(ev);
         }
-        else if( id.startsWith("edit")){
-            this.editDevConfirm(ev);
-        }else if(id.startsWith("btn-todo")){
-            this.allDevState(ev);
+        else if( id.startsWith("edit"))
+        {
+            this.editModule(ev);
         }
-        else {
+        else if(id.startsWith("btn-todo-"))
+        {
+            this.allStateModule(ev);
+        }
+        else 
+        {
             console.warn("Evento inesperado:", ev);
             alert("Algo salió mal");
             window.location.replace("http://localhost:8000/");
         }
     }
 
-    public allDevState(ev: Event) {
-        const idPart = (ev.target as HTMLElement).id; // más seguro con TypeScript
-        const on_off = idPart.split('-')[2];
-    
-        // Validar valor esperado
-        if (on_off !== "on" && on_off !== "off") {
-            console.error("Estado no válido:", on_off);
+    public allStateModule(ev: Event) 
+    {
+        const idModule = (ev.target as HTMLElement).id;
+        const actual_state = idModule.split('-')[2];
+        if (actual_state !== "on" && actual_state !== "off") 
+        {
+            console.error("Estado no válido:", actual_state);
             return;
         }
-    
-        // Crear payload
-        const state = { state: on_off === "on" };
-    
-        // Crear solicitud
+        const next_state = { state: actual_state === "on" };
         const xhr = new XMLHttpRequest();
         xhr.open("POST", "http://localhost:8000/devices/all", true);
         xhr.setRequestHeader("Content-Type", "application/json");
-    
-        // Manejador de respuesta
-        xhr.onload = function () {
-            if (xhr.status === 200) {
+        xhr.onload = function () 
+        {
+            if (xhr.status === 200) 
+            {
                 console.log("Estado de todos los dispositivos actualizado:", xhr.responseText);
                 window.location.reload();
-            } else {
+            } 
+            else 
+            {
                 console.error("Error al cambiar estado de todos los dispositivos:", xhr.responseText);
                 alert("Error al actualizar todos los dispositivos.");
             }
         };
-    
-        // Enviar JSON
-        xhr.send(JSON.stringify(state));
+        xhr.send(JSON.stringify(next_state));
     }
 
     public newAddModule(ev:Event)
     {
         var modal = document.getElementById("modal-new-mod");
-
-        var nameField: HTMLInputElement = <HTMLInputElement> document.getElementById("modName");
-        var descField: HTMLInputElement = <HTMLInputElement> document.getElementById("modDescription");
-        var typeField: HTMLInputElement = <HTMLInputElement> document.getElementById("modType");
-
+        var nameModule: HTMLInputElement = <HTMLInputElement> document.getElementById("modName");
+        var descModule: HTMLInputElement = <HTMLInputElement> document.getElementById("modDescription");
+        var typeModule: HTMLInputElement = <HTMLInputElement> document.getElementById("modType");
         var cancel = document.getElementById("cancelar-addMod");
-        cancel.addEventListener("click", ()=>{modal.style.display= "none";
-                                            nameField.value = "";
-                                            descField.value = "";
+        cancel.addEventListener("click", ()=>
+        {
+            modal.style.display= "none";
+            nameModule.value = "";
+            descModule.value = "";
         })
         
-        var addDevHandler= (ev:Event)=>{
-            let modName:string = nameField.value;
-            let modDescription:string = descField.value;
-            let modType:string = typeField.value;
-            let newModulo = {"name":modName, "description":modDescription, "state":false, "type":modType}
+        var addModuleHandler= (ev:Event)=>
+        {
+            let modName:string = nameModule.value;
+            let modDescription:string = descModule.value;
+            let modType:string = typeModule.value;
+            let newModule = {"name":modName, "description":modDescription, "state":false, "type":modType}
             let xhr = new XMLHttpRequest();
             xhr.open("POST", "http://localhost:8000/devices/add/", true);
             xhr.setRequestHeader("Content-Type", "application/json");
 
-            xhr.onload = function () {
-                if (xhr.status === 200) {
+            xhr.onload = function () 
+            {
+                if (xhr.status === 200) 
+                    {
                     modal.style.display = "none";
-                    nameField.value = "";
-                    descField.value = "";
-                    typeField.value = "";
+                    nameModule.value = "";
+                    descModule.value = "";
+                    typeModule.value = "";
                     window.location.reload();
-                } else {
+                } 
+                else 
+                {
                     console.error("Error:", xhr.responseText);
                     alert("Error al agregar el dispositivo.");
                 }
             };
 
-            xhr.send(JSON.stringify(newModulo));
+            xhr.send(JSON.stringify(newModule));
         }
         var addConfirmBtn = document.getElementById("btn-confirm-addMod");
-        addConfirmBtn.addEventListener("click",addDevHandler);    
+        addConfirmBtn.addEventListener("click",addModuleHandler);    
         modal.style.display = "block";
     }
 
-
-    // Método del main para eliminar dispositivos
-    public deleteMod(ev: Event) {
-        // Toma id de dispositivo a eliminar
-        console.log("Modal Element:", modal);
-        var id = (ev.target as HTMLElement).id.split("-")[1];
-      
-        // Referencia al modal
+    public deleteModule(ev: Event) 
+    {
+        var idModule = (ev.target as HTMLElement).id.split("-")[1];
         var modal = document.getElementById("modal-eliminar");
         const instance = M.Modal.getInstance(modal);
-        console.log("Modal Element:", modal);
-        console.log("Modal Instance:", instance);
-        
         var cancel = document.getElementById("cancela-eliminar");
-        cancel.onclick = () => {
+        cancel.onclick = () => 
+        {
             modal.style.display = "none";
             instance.close();
         };
-
-      
-        // Operación que se ejecuta al confirmar en el Modal
-        var confirmDelete = (ev: Event) => {
-            let deleteDevice = { "id": id };
+        var confirmDelete = (ev: Event) => 
+        {
+            let deleteDevice = { "id": idModule };
             let xhr = new XMLHttpRequest();
             xhr.open("POST", "http://localhost:8000/devices/delete/", true);
             xhr.setRequestHeader("Content-Type", "application/json");
-           // ✅ Esperar respuesta
-            xhr.onload = function() {
-                if (xhr.status === 200) {
+            xhr.onload = function() 
+            {
+                if (xhr.status === 200) 
+                {
                     console.log("Dispositivo eliminado:", xhr.responseText);
-                    instance.close(); // <- Usa close del modal, no style.display
-                    window.location.reload(); // Recargar la página para reflejar el cambio
-                } else {
+                    instance.close(); 
+                    window.location.reload();
+                } 
+                else 
+                {
                     console.error("Error al eliminar:", xhr.responseText);
                     alert("No se pudo eliminar el dispositivo.");
                 }
             };
-
             xhr.send(JSON.stringify(deleteDevice));
         };
-      
-        // Confirmar operación
         var delConfirmBtn = document.getElementById("confirma-eliminar");
-        //delConfirmBtn.addEventListener("click",confirmDelete);
         delConfirmBtn.onclick = confirmDelete;
-      
         instance.open();
-      }
+    }
 
-    public editDevConfirm(ev:Event): void{
-        // Obtener ID desde el botón pulsado
-        const id = (ev.target as HTMLElement).id.split("-")[1];
-
-        // Referencia al modal de edición
+    public editModule(ev:Event): void
+    {
+        const idModule = (ev.target as HTMLElement).id.split("-")[1];
         const modal = document.getElementById("modal-edit-device");
         const instance = M.Modal.getInstance(modal);
-
-        // Campos del formulario
-        const nameField = document.getElementById("edit-dev-name") as HTMLInputElement;
-        const descField = document.getElementById("edit-description") as HTMLInputElement;
-
-        // Botón de cancelar para cerrar la operación
-        // Botón Cancelar
+        const nameModule = document.getElementById("edit-dev-name") as HTMLInputElement;
+        const descModule = document.getElementById("edit-description") as HTMLInputElement;
         const cancelBtn = document.getElementById("cancelar-edit");
-        cancelBtn.onclick = () => {
+        cancelBtn.onclick = () => 
+        {
             instance.close();
-            nameField.value = "";
-            descField.value = "";
+            nameModule.value = "";
+            descModule.value = "";
         };
-        
         const confirmBtn = document.getElementById("btn-confirm-edit");
-
-        confirmBtn.onclick = () => {
-            const devName = nameField.value.trim();
-            const devDesc = descField.value.trim();
-    
-            if (!devName || !devDesc) {
+        confirmBtn.onclick = () => 
+        {
+            const ModName = nameModule.value.trim();
+            const ModDesc = descModule.value.trim();
+            if (!ModName || !ModDesc) 
+            {
                 alert("Por favor complete todos los campos.");
                 return;
             }
-    
-            const newInfo = {
-                id: id,
-                name: devName,
-                description: devDesc
+            const newInfo = 
+            {
+                id: idModule,
+                name: ModName,
+                description: ModDesc
             };
-    
-            // Enviar con XMLHttpRequest
             const xhr = new XMLHttpRequest();
             xhr.open("POST", "http://localhost:8000/devices/edit/", true);
             xhr.setRequestHeader("Content-Type", "application/json");
-    
-            xhr.onload = () => {
-                if (xhr.status === 200) {
+            xhr.onload = () => 
+            {
+                if (xhr.status === 200) 
+                {
                     console.log("Dispositivo editado:", xhr.responseText);
                     instance.close();
                     window.location.reload();
-                } else {
+                } 
+                else 
+                {
                     console.error("Error al editar:", xhr.responseText);
                     alert("No se pudo editar el dispositivo.");
                 }
             };
     
-            xhr.onerror = () => {
+            xhr.onerror = () => 
+            {
                 console.error("Error de red al editar.");
                 alert("Error de red al editar el dispositivo.");
             };
-    
             xhr.send(JSON.stringify(newInfo));
         };
-    
-        // Abrir modal usando Materialize
         instance.open();
     }
     
-    public changeDevState(ev: Event) {
-        // Obtener la checkbox que disparó el evento
+    public changeStateModule(ev: Event) 
+    {
         const checkBox = ev.target as HTMLInputElement;
-    
-        // Validar ID y extraer el número de dispositivo
-        const idParts = checkBox.id.split('-');
-        if (idParts.length < 2) {
+        const idModule = checkBox.id.split('-');
+        if (idModule.length < 2) 
+        {
             console.error("ID de checkbox no válido:", checkBox.id);
             return;
         }
-    
-        const deviceId = idParts[1];
+        const ModuleId = idModule[1];
         const newState = checkBox.checked;
-    
-        const datos = {
-            id: deviceId,
+        const datos = 
+        {
+            id: ModuleId,
             state: newState
         };
-    
-        // Enviar con XMLHttpRequest
         const xhr = new XMLHttpRequest();
         xhr.open("POST", "http://localhost:8000/devices/changestate", true);
         xhr.setRequestHeader("Content-Type", "application/json");
-    
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                console.log(`Estado del dispositivo ${deviceId} actualizado correctamente.`);
-            } else {
+        xhr.onload = function () 
+        {
+            if (xhr.status === 200) 
+            {
+                console.log(`Estado del dispositivo ${ModuleId} actualizado correctamente.`);
+            } 
+            else 
+            {
                 console.error("Error al actualizar estado:", xhr.responseText);
                 alert("No se pudo actualizar el estado del dispositivo.");
             }
         };
-    
         xhr.send(JSON.stringify(datos));
     }
         
 }
 
-window.addEventListener("load", () => {
+window.addEventListener("load", () => 
+{
    let miObjMain: Main = new Main();
    miObjMain.initPageApp();
-   // Inicializar todos los modales
    const elems = document.querySelectorAll('.modal');
     M.Modal.init(elems);
-   
 });

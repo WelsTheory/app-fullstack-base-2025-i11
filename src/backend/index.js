@@ -1,5 +1,3 @@
-//=======[ Settings, Imports & Data ]==========================================
-
 var PORT    = 3000;
 
 var express = require('express');
@@ -13,10 +11,12 @@ app.use(express.json());
 app.use(express.static('/home/node/app/static/'));
 
 //=======[ Main module code ]==================================================
-
-app.get('/devices', (req, res) => {
-    utils.query("SELECT * FROM Devices", (error, results) => {
-        if (error) {
+app.get('/devices', (req, res) => 
+{
+    utils.query("SELECT * FROM Devices", (error, results) => 
+        {
+        if (error) 
+        {
             console.error('Database error:', error);
             return res.status(500).json({
                 success: false,
@@ -30,57 +30,58 @@ app.get('/devices', (req, res) => {
     });
 });
 
-app.get('/devices/:id', (req, res) => {
+app.get('/devices/:id', (req, res) => 
+{
     const deviceId = req.params.id;
     utils.query(
-        "SELECT * FROM Devices WHERE id = ?",[deviceId],(error, results) => {
-            if (error) {
+        "SELECT * FROM Devices WHERE id = ?",[deviceId],(error, results) => 
+        {
+            if (error) 
+            {
                 console.error('Database error:', error);
                 return res.status(500).json({
                     success: false,
                     error: "Database query failed"
                 });
             }
-            
-            if (results.length === 0) {
+            if (results.length === 0) 
+            {
                 return res.status(404).json({
                     success: false,
                     error: "Device not found"
                 });
             }
-            
             res.status(200).json({
                 success: true,
-                data: results[0]  // Devuelve solo el primer resultado (debería ser único por ID)
+                data: results[0]
             });
         }
     );
 });
 
-app.post('/devices/changestate', async (req, res) => {
+app.post('/devices/changestate', async (req, res) => 
+{
     const { id, state } = req.body;
-
-    // Validar entrada básica
-    if (!id || typeof state !== 'boolean') {
+    if (!id || typeof state !== 'boolean') 
+    {
         return res.status(400).json({
             success: false,
             message: "Se requieren 'id' y 'state' (booleano)."
         });
     }
-
     try {
-        // Ejecutar UPDATE
         await utils.query(
             "UPDATE Devices SET state = ? WHERE id = ?",
             [state ? 1 : 0, id]
         );
-
         res.status(200).json({
             success: true,
             message: `Estado del dispositivo con id=${id} actualizado a state=${state}.`
         });
 
-    } catch (error) {
+    } 
+    catch (error) 
+    {
         console.error(error);
         res.status(500).json({
             success: false,
@@ -92,24 +93,27 @@ app.post('/devices/changestate', async (req, res) => {
 
 
 
-app.post('/devices/delete/', async (req, res) => {
-    const deviceId = parseInt(req.body.id); // asegúrate de que sea número
-
-    if (!deviceId) {
+app.post('/devices/delete/', async (req, res) => 
+{
+    const deviceId = parseInt(req.body.id);
+    if (!deviceId) 
+    {
         return res.status(400).json({
             success: false,
             message: "Falta el ID del dispositivo"
         });
     }
-
-    try {
+    try 
+    {
         await utils.query("DELETE FROM Devices WHERE id = ?", [deviceId]);
         res.status(200).json({
             success: true,
             message: "Dispositivo eliminado correctamente",
             deletedId: deviceId
         });
-    } catch (error) {
+    } 
+    catch (error) 
+    {
         console.error(error);
         res.status(500).json({
             success: false,
@@ -119,8 +123,8 @@ app.post('/devices/delete/', async (req, res) => {
     }
 });
 
-// Agregar nuevo dispositivo usando utils.query
-app.post('/devices/add/', (req, res) => {
+app.post('/devices/add/', (req, res) => 
+{
     const sql = "INSERT INTO Devices (name, description,state,type) VALUES (?, ?,?,?)";
     const params = [
         req.body.name,
@@ -129,7 +133,8 @@ app.post('/devices/add/', (req, res) => {
         req.body.type
     ];
 
-    utils.query(sql, params, (error, insertResult) => {
+    utils.query(sql, params, (error, insertResult) => 
+    {
         if (error) {
             console.error('Error al insertar:', error);
             return res.status(500).json({
@@ -138,8 +143,6 @@ app.post('/devices/add/', (req, res) => {
                 error: error.message
             });
         }
-
-        // ✅ OK: insertId lo devuelve MySQL automáticamente
         res.status(200).json({
             success: true,
             message: "Dispositivo agregado correctamente",
@@ -148,40 +151,37 @@ app.post('/devices/add/', (req, res) => {
     });
 });
 
-app.post('/devices/edit/', async (req, res) => {
+app.post('/devices/edit/', async (req, res) => 
+{
     const { id, name, description } = req.body;
-
-    // Validación básica
     if (!id || !name || !description) {
         return res.status(400).json({
             success: false,
             message: "Faltan campos obligatorios: id, name o description."
         });
     }
-
-    try {
-        // Ejecutar UPDATE
+    try 
+    {
         const result = await utils.query(
             "UPDATE Devices SET name = ?, description = ? WHERE id = ?",
             [name, description, id]
         );
-
-        // Revisar si realmente se modificó algo
-        if (result.affectedRows === 0) {
+        if (result.affectedRows === 0) 
+        {
             return res.status(404).json({
                 success: false,
                 message: `Dispositivo con id ${id} no encontrado o sin cambios.`
             });
         }
-
-        // OK
         res.status(200).json({
             success: true,
             message: `Dispositivo con id ${id} editado correctamente.`,
             updatedId: id
         });
 
-    } catch (error) {
+    } 
+    catch (error) 
+    {
         console.error(error);
         res.status(500).json({
             success: false,
@@ -191,26 +191,27 @@ app.post('/devices/edit/', async (req, res) => {
     }
 });
 
-app.post('/devices/all', async (req, res) => {
+app.post('/devices/all', async (req, res) => 
+{
     const newState = req.body.state;
-
-    // Validar que se reciba un booleano válido
     if (typeof newState !== 'boolean') {
         return res.status(400).json({
             success: false,
             message: "El campo 'state' debe ser booleano (true o false)."
         });
     }
-
-    try {
-        // Actualizar todos los dispositivos
-        await utils.query("UPDATE Devices SET state = ?", [newState ? 1 : 0]);
-
+    try 
+    {
+        await utils.query(
+            "UPDATE Devices SET state = ?", [newState ? 1 : 0]
+        );
         res.status(200).json({
             success: true,
             message: `Todos los dispositivos se actualizaron a state=${newState}.`
         });
-    } catch (error) {
+    } 
+    catch (error) 
+    {
         console.error(error);
         res.status(500).json({
             success: false,
@@ -223,5 +224,3 @@ app.post('/devices/all', async (req, res) => {
 app.listen(PORT, function(req, res) {
     console.log("NodeJS API running correctly");
 });
-
-//=======[ End of file ]=======================================================
